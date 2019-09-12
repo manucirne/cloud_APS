@@ -14,7 +14,7 @@ class TarefaPorId(Resource):
         if id in dados:
             return dados[id], 200
         return {'Erro':'Id inexistente!'},400    
-    
+    '/tarefa'
 
     def delete(self, id): #deleta uma tarefa por id
         global dados
@@ -46,4 +46,4 @@ class Tarefas(Resource):
         global dados
         if len(dados) > 0:
             return dados, 200
-        return {"error":'empty'}, 400
+        return {"Erro":"Não temos dados para mostrar"}, 400
