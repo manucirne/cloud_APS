@@ -34,7 +34,7 @@ if len(sys.argv) > 1:
         print("1 - Para \033[5;32;49madicionar\033[0;37;49m uma tarefa escreva \033[1;31;49m tarefa adicionar <titulo> <mensagem>\033[0;37;49m  no terminal\n")
         print("2 - Para \033[5;32;49mlistar\033[0;37;49m suas tarefas escreva \033[1;31;49m 'tarefa listar'\033[0;37;49m no terminal \n")
         print("3 - Para \033[5;32;49mbuscar\033[0;37;49m uma tarefa escreva \033[1;31;49m 'tarefa buscar id_tarefa'\033[0;37;49m no terminal \n")
-        print("4 - Para \033[5;32;49mapagar\033[0;37;49m uma tarefa escreva \033[1;31;49m 'tarefa buscar id_tarefa'\033[0;37;49m no terminal \n")
+        print("4 - Para \033[5;32;49mapagar\033[0;37;49m uma tarefa escreva \033[1;31;49m 'tarefa apagar id_tarefa'\033[0;37;49m no terminal \n")
         print("5 - Para \033[5;32;49matualizar\033[0;37;49m uma tarefa escreva \033[1;31;49m 'tarefa atualizar id_tarefa <titulo> <mensagem>'\033[0;37;49m no terminal\n")
         print("Se o seu título ou mensagem tiver mais de uma palavra coloque-o entre aspas")
 
