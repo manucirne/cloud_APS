@@ -2,7 +2,6 @@
 from flask import Flask, request
 from flask_restful import Api
 from tarefa_aps1 import TarefaPorId, Tarefas
-import set_env
 
 app = Flask(__name__)
 api = Api(app)
