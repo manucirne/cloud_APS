@@ -1,5 +1,5 @@
 #!flask/bin/python
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_restful import Api
 from tarefa_aps1 import TarefaPorId, Tarefas
 
@@ -13,6 +13,9 @@ api.add_resource(Tarefas, '/tarefa')
 def hc():
     return '',200
 
+@app.route('/')
+def index():
+    return 'Teste', 200
 
 if __name__ == '__main__':
-    app.run('0.0.0.0',port=5000)
+    app.run('0.0.0.0',port=8080)
