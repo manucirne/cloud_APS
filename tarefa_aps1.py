@@ -9,24 +9,23 @@ id_count = 1
 app = Flask(__name__)
 dados = {}
 
-#ip_banco = os.environ["IP_BANCO"]
+ip_banco = os.environ["IP_BANCO"]
 
 
 def get_db(ip_banco):
     client = MongoClient(ip_banco,27017)
-    #client = MongoClient('54.226.111.248:27017')
-    db = client.test
+    db = client.app_manu
     return db
 
-db = get_db("54.226.111.248")
+db = get_db(ip_banco)
 
 
 class TarefaPorId(Resource):
 
     def get(self, id): #mostra uma tarefa por id
-        res = db.teste.find(
+        res = db.tarefas.find(
             {
-            _id: id
+            "_id": id
             }
         )
         return list(res), 200  
@@ -35,7 +34,7 @@ class TarefaPorId(Resource):
         global db
         qual = db.tarefas.delete(
             {
-                _id:id
+                "_id":id
             }
         )
         return {"Sucesso":"Arrasou! tarefa deletada!"},200
@@ -44,7 +43,7 @@ class TarefaPorId(Resource):
         global db
         res = request.get_json()
         res["id_"] = id
-        update_one({
+        db.tarefas.update_one({
             '_id':id
         },
             res
@@ -56,22 +55,25 @@ class TarefaPorId(Resource):
 class Tarefas(Resource):
     def post(self):   #criatarefa
         global db
-        id_count = db.ids.find()
-        if id_count == None:
-            db.id.insert({
-                ultimo:0
+        lista = list(db.ids.find())
+        id_count = lista[0]["ultimo"]
+        if lista == []:
+            db.ids.insert({
+                "ultimo":0
             })
         else:
-            db.id.update({
-                ultimo:id_count
+            db.ids.update({
+                "ultimo":id_count
             },
             {
-                ultimo:id_count+1
+                "ultimo":id_count+1
             })
-        dados[id_count] = request.get_json()
+        db.tarefas.insert({
+            str(id_count):request.get_json()
+            })
         return {"Sucesso":"Arrasou!"},200
 
     def get(self): #mostra todas as tarefas
         global db
-        dados = db.teste.find()
-        return dados, 200
+        dados = db.tarefas.find()
+        return list(dados), 200
