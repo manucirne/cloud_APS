@@ -1,10 +1,13 @@
 #!flask/bin/python
-from flask import Flask, request, jsonify
+from flask import Flask, redirect, url_for, request
 from flask_restful import Api
 from tarefa_aps1 import TarefaPorId, Tarefas
+import os
 
 app = Flask(__name__)
 api = Api(app)
+
+ip_saida = os.environ["IP_REDIRECT"]
 
 api.add_resource(TarefaPorId, '/tarefa/<int:id>')
 api.add_resource(Tarefas, '/tarefa')
@@ -13,9 +16,6 @@ api.add_resource(Tarefas, '/tarefa')
 def hc():
     return '',200
 
-@app.route('/')
-def index():
-    return 'Teste', 200
 
 if __name__ == '__main__':
-    app.run('127.0.0.1',port=8080)
+    app.run('0.0.0.0',port=5000)

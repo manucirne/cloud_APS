@@ -1,48 +1,77 @@
 from flask import Flask, request
 from flask_restful import Resource
+import pymongo
+from pymongo import MongoClient
+import os
 
 id_count = 1
 
 app = Flask(__name__)
 dados = {}
 
+#ip_banco = os.environ["IP_BANCO"]
+
+
+def get_db(ip_banco):
+    client = MongoClient(ip_banco,27017)
+    #client = MongoClient('54.226.111.248:27017')
+    db = client.test
+    return db
+
+db = get_db("54.226.111.248")
+
 
 class TarefaPorId(Resource):
 
     def get(self, id): #mostra uma tarefa por id
-        global dados
-        if id in dados:
-            return dados[id], 200
-        return {'Erro':'Id inexistente!'},400    
+        res = db.teste.find(
+            {
+            _id: id
+            }
+        )
+        return list(res), 200  
 
     def delete(self, id): #deleta uma tarefa por id
-        global dados
-        try:
-            del dados[id]
-        except KeyError:
-            return {"Erro":"Id inexistente!"},400
-        return {"Sucesso":"Arrasou!"},200
+        global db
+        qual = db.tarefas.delete(
+            {
+                _id:id
+            }
+        )
+        return {"Sucesso":"Arrasou! tarefa deletada!"},200
 
     def put(self, id):  #update de uma tarefa por id
-        global dados
-        if id in dados:
-            dados[id] = {}
-            dados[id] = request.get_json()
-            return {"Sucesso":"Arrasou!"},200
-        return {"Erro":"Id inexistente!"},400
+        global db
+        res = request.get_json()
+        res["id_"] = id
+        update_one({
+            '_id':id
+        },
+            res
+        )
+        return {"Sucesso":"Arrasou! Tarefa "},200
         
 
 
 class Tarefas(Resource):
     def post(self):   #criatarefa
-        global dados
-        global id_count
+        global db
+        id_count = db.ids.find()
+        if id_count == None:
+            db.id.insert({
+                ultimo:0
+            })
+        else:
+            db.id.update({
+                ultimo:id_count
+            },
+            {
+                ultimo:id_count+1
+            })
         dados[id_count] = request.get_json()
-        id_count += 1
         return {"Sucesso":"Arrasou!"},200
 
-    def get(self): #mostra todas as tarfeas
-        global dados
-        if len(dados) > 0:
-            return dados, 200
-        return {"Erro":"Não temos dados para mostrar"}, 400
+    def get(self): #mostra todas as tarefas
+        global db
+        dados = db.teste.find()
+        return dados, 200
