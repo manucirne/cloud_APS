@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_restful import Resource
 import pymongo
 from pymongo import MongoClient
@@ -25,16 +25,16 @@ class TarefaPorId(Resource):
     def get(self, id): #mostra uma tarefa por id
         res = db.tarefas.find(
             {
-            "_id": id
+            "_id": str(id)
             }
         )
-        return list(res), 200  
+        return {"Dado":list(res)}, 200  
 
     def delete(self, id): #deleta uma tarefa por id
         global db
         qual = db.tarefas.delete(
             {
-                "_id":id
+                "_id":str(id)
             }
         )
         return {"Sucesso":"Arrasou! tarefa deletada!"},200
@@ -42,13 +42,21 @@ class TarefaPorId(Resource):
     def put(self, id):  #update de uma tarefa por id
         global db
         res = request.get_json()
-        res["id_"] = id
-        db.tarefas.update_one({
-            '_id':id
-        },
-            res
+        filtro = {"_id":str(id)}
+        qual = db.tarefa.find(
+            {"_id":str(id)}
         )
-        return {"Sucesso":"Arrasou! Tarefa "},200
+        if qual == None:
+            return {"Id":"inexistente"}, 200
+        try:
+            db.tarefas.update_one({
+                "_id":str(id)
+            },
+                {"$set":{"texto":res["texto"],"mensagem":res["mensagem"]}}
+            )
+            return {"Sucesso":"Arrasou! Tarefa "},200
+        except:
+            return{"Envie campos com nomes texto e mensagem":"por favor!"}
         
 
 
@@ -56,24 +64,35 @@ class Tarefas(Resource):
     def post(self):   #criatarefa
         global db
         lista = list(db.ids.find())
-        id_count = lista[0]["ultimo"]
         if lista == []:
+            print("entrou no certo")
             db.ids.insert({
                 "ultimo":0
             })
+            data = request.get_json()
+            data["_id"] = "0"
+            db.tarefas.insert(
+                data
+                )
         else:
+            id_count = lista[0]["ultimo"]
             db.ids.update({
                 "ultimo":id_count
             },
             {
                 "ultimo":id_count+1
             })
-        db.tarefas.insert({
-            str(id_count):request.get_json()
-            })
+            data = request.get_json()
+            data["_id"] = str(id_count)
+            db.tarefas.insert(
+                data
+                )
         return {"Sucesso":"Arrasou!"},200
 
     def get(self): #mostra todas as tarefas
         global db
-        dados = db.tarefas.find()
-        return list(dados), 200
+        dados = list(db.tarefas.find())
+        print(dados)
+        if dados == []:
+            return {"Não existem dados" : "para serem mostrados"}, 200
+        return {"Dados":dados}, 200
