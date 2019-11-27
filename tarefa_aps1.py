@@ -32,7 +32,7 @@ class TarefaPorId(Resource):
 
     def delete(self, id): #deleta uma tarefa por id
         global db
-        qual = db.tarefas.delete(
+        qual = db.tarefas.delete_one(
             {
                 "_id":str(id)
             }
@@ -70,6 +70,7 @@ class Tarefas(Resource):
                 "ultimo":0
             })
             data = request.get_json()
+            print(data)
             data["_id"] = "0"
             db.tarefas.insert(
                 data

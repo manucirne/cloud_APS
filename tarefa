@@ -4,28 +4,30 @@ import requests
 from os import environ
 import sys
 
+
 if len(sys.argv) > 1:
 
     if sys.argv[1] == 'adicionar':
-        data = {"titulo":sys.argv[2], "mensagem":sys.argv[3]}
-        r = requests.post(url = environ['IPADDR']+'/tarefa', json = data)
+        data = {"texto":sys.argv[2], "mensagem":sys.argv[3]}
+
+        r = requests.post(url = 'http://' + environ['IPADDR']+'/tarefa',  json=data)
         print(r.text)
 
     elif sys.argv[1] == 'listar':
-        r = requests.get(environ['IPADDR']+'/tarefa')
+        r = requests.get('http://' + environ['IPADDR']+'/tarefa')
         print(r.text)
 
     elif sys.argv[1] == 'buscar':
-        r = requests.get(environ['IPADDR']+'/tarefa/'+sys.argv[2])
+        r = requests.get('http://' + environ['IPADDR']+'/tarefa/'+sys.argv[2])
         print(r.text)
 
     elif sys.argv[1] == 'apagar':
-        r = requests.delete(environ['IPADDR']+'/tarefa/'+sys.argv[2])
+        r = requests.delete('http://' + environ['IPADDR']+'/tarefa/'+sys.argv[2])
         print(r.text)
 
     elif sys.argv[1] == 'atualizar':
         data = {"titulo":sys.argv[3], "mensagem":sys.argv[4]}
-        r = requests.put(url = environ['IPADDR']+'/tarefa/'+sys.argv[2], json = data)
+        r = requests.put(url = 'http://' + environ['IPADDR']+'/tarefa/'+sys.argv[2],  json=data)
         print(r.text)
 
     elif sys.argv[1] == 'help':

@@ -1,1 +1,1 @@
-export IPADDR="http://127.0.0.1:5000"
+export IPADDR="manuloadB-417003883.us-east-1.elb.amazonaws.com"
